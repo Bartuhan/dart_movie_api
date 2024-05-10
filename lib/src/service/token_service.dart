@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 
 class TokenService {
   final DbCollection store;
+  final tokenSecret = Provider.of.fetch<TokenSecret>();
 
   TokenService({required this.store});
 
@@ -21,18 +22,24 @@ class TokenService {
       'iat': DateTime.now().millisecondsSinceEpoch,
     }, issuer: issuer, jwtId: jwtId, subject: subject);
 
-    return jwt.sign(SecretKey('12345'), expiresIn: expiry);
+    return jwt.sign(SecretKey(tokenSecret.getSecret), expiresIn: expiry);
   }
 
-  JWT verifyJWT(String token, String secret) {
+  JWT verifyJWT(
+    String token,
+  ) {
     try {
-      final jwt = JWT.verify(token, SecretKey(secret));
+      final jwt = JWT.verify(token, SecretKey(tokenSecret.getSecret));
       return jwt;
-    } on JWTExpiredException {
-      throw Exception('JWT Expired...');
-    } on JWTInvalidException {
-      throw Exception('JWT Invalid...');
+    } on JWTExpiredException catch (e) {
+      throw Exception('JWT Expired...$e');
+    } on JWTInvalidException catch (e) {
+      throw Exception('JWT Invalid... $e');
     }
+  }
+
+  Future<Map<String, dynamic>?> getToken(String tokenId) async {
+    return await store.findOne(where.eq('tokenId', tokenId));
   }
 
   Future<TokenPair> createTokenPair(String userId) async {
@@ -55,4 +62,10 @@ class TokenService {
   Future<dynamic> removeToken(String tokenId) async {
     return await store.deleteOne({'tokenId': tokenId});
   }
+}
+
+class JwtCustomException implements Exception {
+  final String error;
+
+  const JwtCustomException({required this.error});
 }
