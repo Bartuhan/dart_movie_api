@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:dart_movie_api/src/constants/app_const.dart';
 import 'package:dart_movie_api/src/extensions/http_ext.dart';
@@ -23,13 +22,6 @@ Future<void> main(List<String> arguments) async {
   final port = Env.port;
   final dbInst = Provider.of.fetch<DbService>();
   await dbInst.openDb();
-
-  // app.get('/', (Request request) {
-  //   return Response.ok(
-  //     json.encode({'message': 'Get End Point Testing OKEY !!!'}),
-  //     headers: {'Content-type': 'application/json'},
-  //   );
-  // });
 
   app.mount(
     '/movies',
