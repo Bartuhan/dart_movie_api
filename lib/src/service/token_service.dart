@@ -31,10 +31,12 @@ class TokenService {
     try {
       final jwt = JWT.verify(token, SecretKey(tokenSecret.getSecret));
       return jwt;
-    } on JWTExpiredException catch (e) {
-      throw Exception('JWT Expired...$e');
-    } on JWTInvalidException catch (e) {
-      throw Exception('JWT Invalid... $e');
+    } on JWTExpiredException {
+      throw JwtCustomException(error: 'JWT Expired...');
+    } on JWTInvalidException {
+      throw JwtCustomException(error: 'Invalid Token...');
+    } on JWTUndefinedException {
+      throw JwtCustomException(error: 'Invalid Lenght...');
     }
   }
 

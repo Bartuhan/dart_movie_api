@@ -37,7 +37,7 @@ Future<void> main(List<String> arguments) async {
   );
 
   app.all('/<routeName|.*>', (Request request, String routeName) {
-    final indexFile = File('public/main.html').readAsStringSync();
+    final indexFile = File('public/assets/main.html').readAsStringSync();
     return Response.ok(indexFile, headers: CustomHeader.html.getType);
   });
 
@@ -47,6 +47,8 @@ Future<void> main(List<String> arguments) async {
       .addHandler(app.call);
 
   await serve(handler, InternetAddress.anyIPv4, int.parse(port));
+
+  print('API uygulaması başlatıldı');
 }
 
 Future<void> initData() async {

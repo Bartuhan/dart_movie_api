@@ -154,7 +154,7 @@ class AuthServices {
         );
       }
       return Response.ok(
-        json.encode({'error': 'Successfully logout'}),
+        json.encode({'message': 'Successfully logout'}),
         headers: CustomHeader.json.getType,
       );
     });
@@ -183,7 +183,9 @@ class AuthServices {
       }
     });
 
-    final handler = Pipeline().addMiddleware(checkLoginUser(store)).addHandler(app.call);
+    final handler = Pipeline() //
+        .addMiddleware(checkLoginUser(store))
+        .addHandler(app.call);
     return handler;
   }
 }

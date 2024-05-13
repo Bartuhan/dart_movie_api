@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dart_movie_api/src/extensions/http_ext.dart';
 import 'package:dart_movie_api/src/middlewares/check_authorization.dart';
+import 'package:dart_movie_api/src/middlewares/check_token_middleware.dart';
 import 'package:dart_movie_api/src/models/movie.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shelf/shelf.dart';
@@ -72,6 +73,7 @@ class MovieService {
 
     final handler = Pipeline() //
         .addMiddleware(checkAuthorization())
+        .addMiddleware(checkToken(store))
         .addHandler(app.call);
 
     return handler;
